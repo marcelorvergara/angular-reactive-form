@@ -27,10 +27,30 @@ export class AppComponent implements OnInit {
       'gender': new FormControl('male'),
       'hobbies': new FormArray([])
     })
+    // this.signupForm.valueChanges.subscribe(
+    //   (value) => console.log(value)
+    // )
+    this.signupForm.statusChanges.subscribe(
+      (state) => console.log(state)
+    )
+    this.signupForm.setValue({
+      'userData' : {
+        'username' : 'Max',
+        'email': 'test@max.com'
+      },
+      'gender' : 'male',
+      'hobbies': []
+    })
+    this.signupForm.patchValue({
+      'userData' : {
+        'username' : 'Anna',
+      }
+    })
   }
 
   onSubmit() {
     console.log(this.signupForm)
+    this.signupForm.reset()
   }
 
   onAddHobby() {
@@ -51,6 +71,7 @@ export class AppComponent implements OnInit {
   forbiddenEmails(controle: FormControl) : Promise<any> |Observable<any> {
     const promise = new Promise<any>((resolve, reject) => {
       setTimeout(() => {
+        console.log(controle.value)
         if(controle.value === 'test@test.com'){
           resolve({'emailIsForbidden': true})
         } else {
