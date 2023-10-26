@@ -10,6 +10,7 @@ export class AppComponent implements OnInit {
 
   genders = ['male', 'female'];
   signupForm: FormGroup
+  forbiddenUsernames = ['Chris', 'Anna']
 
   get hobbyControls() {
     return (this.signupForm.get('hobbies') as FormArray).controls;
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
     this.signupForm = new FormGroup({
       // Nested form group
       'userData': new FormGroup({
-        'username': new FormControl(null, Validators.required),
+        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
         'email': new FormControl(null, [Validators.required, Validators.email]),
       }),
       'gender': new FormControl('male'),
@@ -34,5 +35,15 @@ export class AppComponent implements OnInit {
   onAddHobby() {
     const control = new FormControl(null, Validators.required);
     (<FormArray>this.signupForm.get('hobbies')).push(control);
+  }
+
+  forbiddenNames(control: FormControl): {[s: string]: boolean} {
+    // Logic of the control
+    // 'this' will no refer ts class. Use .bind(this) to pass the ts reference
+    if (this.forbiddenUsernames.indexOf(control.value) !== -1) {
+      return {'nameIsForbidden': true}
+    }
+    // Should return null if the control is ok
+    return null
   }
 }
